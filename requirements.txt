@@ -1,1 +1,4 @@
-# Dépendances Python
+# Aucune dépendance externe nécessaire!
+# Ce projet utilise uniquement la bibliothèque standard Python.
+# Python 3.7 ou supérieur est requis.
+
