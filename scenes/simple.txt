@@ -1,5 +1,5 @@
 # =============================================================================
-# Scène simple - Trois sphères colorées sur un plan
+# Trois sphères colorées sur un plan
 # =============================================================================
 
 # Caméra: position (x y z) point_visé (x y z) champ_de_vision
