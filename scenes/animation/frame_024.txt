@@ -1,0 +1,19 @@
+# Frame 24/30
+
+CAMERA 0 2 8  0 0 0  50
+
+LIGHT 5 10 5  1.0
+LIGHT -3 5 3  0.5
+
+BACKGROUND 0.2 0.2 0.3
+
+PLANE 0 0 0  0 1 0  0.5 0.5 0.5  0.1 0.6 0.1 0.3
+
+# Sphere rouge (tourne)
+SPHERE -0.143 1 1.557  1.0  0.8 0.2 0.2  0.1 0.7 0.3 50 0.2
+
+# Sphere verte (centrale, fixe)
+SPHERE 0 0.7 -0.5  0.7  0.2 0.8 0.2  0.1 0.7 0.4 60 0.1
+
+# Sphere bleue (tourne)
+SPHERE 0.297 1.2 -3.032  1.2  0.2 0.3 0.9  0.1 0.6 0.5 80 0.3

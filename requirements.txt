@@ -1,4 +1,7 @@
-# Aucune dépendance externe nécessaire!
+# Aucune dépendance externe nécessaire pour le ray tracer de base!
 # Ce projet utilise uniquement la bibliothèque standard Python.
 # Python 3.7 ou supérieur est requis.
+
+# Pour créer des GIFs animés (optionnel):
+Pillow>=10.0.0
 
