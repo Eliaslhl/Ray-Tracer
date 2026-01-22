@@ -8,8 +8,8 @@ class Ray:
     
     def __init__(self, origin, direction):
         self.origin = origin
-        self.direction = direction.normalize()
-    
+        self.direction = direction.normalize() # vecteur unitaire
+
     def at(self, t):
         """Point sur le rayon à la distance t"""
         return self.origin + self.direction * t
@@ -27,28 +27,34 @@ class Sphere:
         """Calcule l'intersection rayon-sphère"""
         oc = ray.origin - self.center
         
+        # coeff equation quadratique
         a = ray.direction.dot(ray.direction)
         b = 2.0 * oc.dot(ray.direction)
         c = oc.dot(oc) - self.radius * self.radius
         
         discriminant = b * b - 4 * a * c
         
+        # si pas d'intersection
         if discriminant < 0:
             return False, None, None
         
         sqrt_discriminant = math.sqrt(discriminant)
         t1 = (-b - sqrt_discriminant) / (2 * a)
         t2 = (-b + sqrt_discriminant) / (2 * a)
-        
+
+        # on prend la plus petite valeur positive
         t = None
-        if t1 > 0.001:
+        if t1 > 0.001: # éviter l'auto-intersection
             t = t1
         elif t2 > 0.001:
             t = t2
         else:
             return False, None, None
-        
+
+        # Calcul du point d'intersection
         hit_point = ray.at(t)
+        
+        # Calcul de la normale (vecteur perpendiculaire à la surface)
         normal = (hit_point - self.center).normalize()
         
         return True, t, normal
@@ -66,11 +72,13 @@ class Plane:
         """Calcule l'intersection rayon-plan"""
         denom = ray.direction.dot(self.normal)
         
+        # Si le dénominateur est proche de 0, le rayon est parallèle au plan
         if abs(denom) < 1e-6:
             return False, None, None
         
         t = (self.point - ray.origin).dot(self.normal) / denom
         
+        # On ne considère que les intersections devant le rayon
         if t < 0.001:
             return False, None, None
         

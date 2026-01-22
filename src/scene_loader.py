@@ -79,7 +79,7 @@ def load_scene(filename):
                     shininess = float(tokens[11]) if len(tokens) > 11 else 32.0
                     reflectivity = float(tokens[12]) if len(tokens) > 12 else 0.0
                     
-                    material = Material(color, ambient, diffuse, specular, shininess, reflectivity)
+                    material = Material(color, ambient, diffuse, specular, shininess, reflectivity) # type: ignore
                     sphere = Sphere(center, radius, material)
                     scene.add_object(sphere)
                 
@@ -99,7 +99,7 @@ def load_scene(filename):
                     shininess = 10.0
                     reflectivity = float(tokens[13]) if len(tokens) > 13 else 0.0
                     
-                    material = Material(color, ambient, diffuse, specular, shininess, reflectivity)
+                    material = Material(color, ambient, diffuse, specular, shininess, reflectivity) # type: ignore
                     plane = Plane(point, normal, material)
                     scene.add_object(plane)
                 

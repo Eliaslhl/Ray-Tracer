@@ -16,9 +16,11 @@ class Vec3:
     def __sub__(self, other):
         return Vec3(self.x - other.x, self.y - other.y, self.z - other.z)
     
+    # pour gérer la multiplication scalaire à droite (expl calc direction)
     def __mul__(self, scalar):
         return Vec3(self.x * scalar, self.y * scalar, self.z * scalar)
     
+    # pour gérer la multiplication scalaire à gauche (expl calc reflexion)
     def __rmul__(self, scalar):
         return self.__mul__(scalar)
     
@@ -28,6 +30,7 @@ class Vec3:
     def __neg__(self):
         return Vec3(-self.x, -self.y, -self.z)
     
+    # affiche vecteur proprement
     def __repr__(self):
         return f"Vec3({self.x:.2f}, {self.y:.2f}, {self.z:.2f})"
     
@@ -44,11 +47,11 @@ class Vec3:
         )
     
     def length(self):
-        """Longueur du vecteur"""
+        """Longueur du vecteur (Pythagore)"""
         return math.sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
     
     def normalize(self):
-        """Normalise le vecteur (longueur = 1)"""
+        """Normalise le vecteur (longueur = 1) formule: v̂ = v / ||v||"""
         length = self.length()
         if length > 0:
             return self / length

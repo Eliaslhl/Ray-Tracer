@@ -12,7 +12,7 @@ class Renderer:
         self.width = width
         self.height = height
         self.max_depth = max_depth
-        self.samples_per_pixel = samples_per_pixel
+        self.samples_per_pixel = samples_per_pixel # nbr rayon/pixel pour anti-aliasing
     
     def render(self):
         """Effectue le rendu de la scène"""
@@ -81,7 +81,7 @@ class Renderer:
         # Ajoute les réflexions
         if material.reflectivity > 0:
             reflect_dir = reflect(ray.direction, closest_normal)
-            reflect_ray = Ray(hit_point + closest_normal * 0.001, reflect_dir)
+            reflect_ray = Ray(hit_point + closest_normal * 0.001, reflect_dir) # type: ignore
             reflect_color = self.trace_ray(reflect_ray, depth + 1)
             color = color * (1 - material.reflectivity) + reflect_color * material.reflectivity
         
