@@ -33,10 +33,19 @@ python src/main.py scenes/simple.txt output/test.ppm 800 600
 python convert.py output/render.ppm
 ```
 
-## Lancement du gif
+## Génération d'animation GIF
 
+Pour créer une animation de rotation :
+
+```bash
+# 1. Génère les fichiers de scène pour chaque frame
 python generate_rotation.py
+
+# 2. Rend toutes les frames et crée le GIF
 python render_animation.py
+```
+
+Le GIF sera créé dans `output/rotation.gif`
 
 ## Fonctionnalités
 
@@ -48,3 +57,4 @@ python render_animation.py
 ---
 
 Projet ESIEE Paris
+Elias LAHLOUH & Felix Mielcarek
