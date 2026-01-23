@@ -1,22 +1,17 @@
-# geometry.py - Formes géométriques
-
 from math_utils import Vec3
 import math
 
 class Ray:
-    """Rayon: origine + t * direction"""
     
     def __init__(self, origin, direction):
         self.origin = origin
         self.direction = direction.normalize() # vecteur unitaire
 
     def at(self, t):
-        """Point sur le rayon à la distance t"""
         return self.origin + self.direction * t
 
 
 class Sphere:
-    """Sphère définie par son centre et son rayon"""
     
     def __init__(self, center, radius, material):
         self.center = center
@@ -24,7 +19,6 @@ class Sphere:
         self.material = material
     
     def intersect(self, ray):
-        """Calcule l'intersection rayon-sphère"""
         oc = ray.origin - self.center
         
         # coeff equation quadratique
@@ -44,7 +38,7 @@ class Sphere:
 
         # on prend la plus petite valeur positive
         t = None
-        if t1 > 0.001: # éviter l'auto-intersection
+        if t1 > 0.001: # évite auto-intersection
             t = t1
         elif t2 > 0.001:
             t = t2
@@ -61,7 +55,6 @@ class Sphere:
 
 
 class Plane:
-    """Plan défini par un point et une normale"""
     
     def __init__(self, point, normal, material):
         self.point = point
@@ -69,7 +62,6 @@ class Plane:
         self.material = material
     
     def intersect(self, ray):
-        """Calcule l'intersection rayon-plan"""
         denom = ray.direction.dot(self.normal)
         
         # Si le dénominateur est proche de 0, le rayon est parallèle au plan
@@ -78,7 +70,6 @@ class Plane:
         
         t = (self.point - ray.origin).dot(self.normal) / denom
         
-        # On ne considère que les intersections devant le rayon
         if t < 0.001:
             return False, None, None
         

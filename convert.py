@@ -1,7 +1,3 @@
-# =============================================================================
-# convert.py - Convertit les fichiers PPM en PNG
-# =============================================================================
-
 """
 Script de conversion PPM vers PNG.
 Usage: python convert.py fichier.ppm [fichier_sortie.png]
@@ -15,9 +11,7 @@ import sys
 import os
 
 def convert_ppm_to_png_with_pillow(input_file, output_file):
-    """
-    Convertit un fichier PPM en PNG en utilisant Pillow.
-    """
+    
     try:
         from PIL import Image
         
@@ -33,10 +27,6 @@ def convert_ppm_to_png_with_pillow(input_file, output_file):
         return False
 
 def convert_ppm_manually(input_file, output_file):
-    """
-    Convertit un fichier PPM en PNG manuellement (sans bibliothèque externe).
-    Cette version crée un PNG basique sans compression optimale.
-    """
     try:
         import struct
         import zlib
@@ -51,7 +41,6 @@ def convert_ppm_manually(input_file, output_file):
         while line_idx < len(lines) and (lines[line_idx].strip().startswith('#') or not lines[line_idx].strip()):
             line_idx += 1
         
-        # Format (doit être P3)
         format_line = lines[line_idx].strip()
         if format_line != 'P3':
             print(f"✗ Format non supporté: {format_line} (seul P3 est supporté)")
@@ -83,17 +72,15 @@ def convert_ppm_manually(input_file, output_file):
         # En-tête PNG
         png_data.extend(b'\x89PNG\r\n\x1a\n')
         
-        # Chunk IHDR (header)
         ihdr = struct.pack('>IIBBBBB', width, height, 8, 2, 0, 0, 0)  # RGB, 8-bit
         png_data.extend(struct.pack('>I', len(ihdr)))
         png_data.extend(b'IHDR')
         png_data.extend(ihdr)
         png_data.extend(struct.pack('>I', zlib.crc32(b'IHDR' + ihdr) & 0xffffffff))
         
-        # Chunk IDAT (image data)
         raw_data = bytearray()
         for y in range(height):
-            raw_data.append(0)  # Filter type (0 = none)
+            raw_data.append(0) 
             for x in range(width):
                 idx = (y * width + x) * 3
                 if idx + 2 < len(pixel_data):
@@ -107,7 +94,6 @@ def convert_ppm_manually(input_file, output_file):
         png_data.extend(compressed)
         png_data.extend(struct.pack('>I', zlib.crc32(b'IDAT' + compressed) & 0xffffffff))
         
-        # Chunk IEND (end)
         png_data.extend(struct.pack('>I', 0))
         png_data.extend(b'IEND')
         png_data.extend(struct.pack('>I', zlib.crc32(b'IEND') & 0xffffffff))
@@ -143,11 +129,9 @@ def main():
         print(f"✗ Erreur: Le fichier '{input_file}' n'existe pas!")
         return 1
     
-    # Détermine le nom du fichier de sortie
     if len(sys.argv) > 2:
         output_file = sys.argv[2]
     else:
-        # Change l'extension .ppm en .png
         base_name = os.path.splitext(input_file)[0]
         output_file = base_name + '.png'
     
@@ -158,11 +142,9 @@ def main():
     print(f"Sortie:  {output_file}")
     print("=" * 60)
     
-    # Essaie d'abord avec Pillow (plus simple et plus fiable)
     print("\nTentative de conversion avec Pillow...")
     success = convert_ppm_to_png_with_pillow(input_file, output_file)
     
-    # Si Pillow n'est pas disponible, utilise la conversion manuelle
     if not success:
         print("\n⚠ Pillow n'est pas installé. Utilisation de la conversion manuelle...")
         print("Pour de meilleurs résultats, installez Pillow: pip install Pillow")
@@ -174,7 +156,6 @@ def main():
         print("CONVERSION TERMINÉE AVEC SUCCÈS!")
         print("=" * 60)
         
-        # Affiche les tailles de fichiers
         input_size = os.path.getsize(input_file)
         output_size = os.path.getsize(output_file)
         ratio = (1 - output_size / input_size) * 100

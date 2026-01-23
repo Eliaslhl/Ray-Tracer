@@ -5,6 +5,10 @@
 # Caméra: position (x y z) point_visé (x y z) champ_de_vision
 CAMERA 0 2 8  0 0 0  50
 
+# Lumière AMBIANTE : éclairage de base pour toute la scène
+# AMBIENT_LIGHT intensity [color_r color_g color_b]
+AMBIENT_LIGHT 0.2 0.4 0.4 0.5
+
 # Lumières: position (x y z) intensité [couleur optionnelle]
 LIGHT 5 10 5  1.0
 # Lumière directionnelle (comme le soleil venant d'en haut à droite)
@@ -20,7 +24,7 @@ PLANE 0 0 0  0 1 0  0.5 0.5 0.5  0.1 0.6 0.1 0.3
 
 # Sphères: centre (x y z) rayon couleur (r g b) [ambient diffuse specular shininess reflectivity]
 # Sphère rouge
-SPHERE -2 1 0  1.0  0.8 0.2 0.2  0.1 0.7 0.3 50 0.2
+SPHERE -2 2 0  0.5  0.8 0.2 0.2  0.1 0.7 0.3 50 0.2
 
 # Sphère verte
 SPHERE 0 0.7 -0.5  0.7  0.2 0.8 0.2  0.1 0.7 0.4 60 0.1

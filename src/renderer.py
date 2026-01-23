@@ -1,11 +1,8 @@
-# renderer.py - Moteur de rendu
-
 from math_utils import Vec3, reflect
 from geometry import Ray
 import math
 
 class Renderer:
-    """Moteur de rendu ray tracing"""
     
     def __init__(self, scene, width=800, height=600, max_depth=3, samples_per_pixel=4):
         self.scene = scene
@@ -15,7 +12,6 @@ class Renderer:
         self.samples_per_pixel = samples_per_pixel # nbr rayon/pixel pour anti-aliasing
     
     def render(self):
-        """Effectue le rendu de la scène"""
         print(f"Rendu {self.width}x{self.height}...")
         
         image = []
@@ -24,7 +20,7 @@ class Renderer:
             row = []
             
             for i in range(self.width):
-                # Anti-aliasing: moyenne de plusieurs rayons par pixel
+                # Anti-aliasing
                 if self.samples_per_pixel > 1:
                     color_sum = Vec3(0, 0, 0)
                     
@@ -53,7 +49,6 @@ class Renderer:
         return image
     
     def trace_ray(self, ray, depth):
-        """Trace un rayon et calcule sa couleur"""
         if depth >= self.max_depth:
             return Vec3(0, 0, 0)
         
@@ -88,48 +83,73 @@ class Renderer:
         return color
     
     def compute_lighting(self, point, normal, view_dir, material):
-        """Calcule l'éclairage (modèle de Phong)"""
+        # Lumière ambiante : commence avec le matériau par défaut
         ambient = material.color * material.ambient
         diffuse = Vec3(0, 0, 0)
         specular = Vec3(0, 0, 0)
         
         for light in self.scene.lights:
-            # Gestion différente selon le type de lumière
-            if light.is_directional:
+            # Gestion des différents types de lumière
+            if hasattr(light, 'is_ambient') and light.is_ambient:
+                # Lumière ambiante globale : remplace l'ambient par défaut
+                ambient = material.color.multiply_components(light.color) * (
+                    material.ambient * light.intensity
+                )
+            elif hasattr(light, 'is_directional') and light.is_directional:
                 # Lumière directionnelle : direction fixe
                 light_dir = -light.direction  # Inverse car direction pointe vers la scène
                 light_distance = float('inf')  # Distance infinie
+                
+                # Vérifie les ombres
+                shadow_ray = Ray(point + normal * 0.001, light_dir)
+                in_shadow = self.is_in_shadow(shadow_ray, light_distance)
+                
+                if not in_shadow:
+                    # Diffuse
+                    diff_intensity = max(0, normal.dot(light_dir))
+                    diffuse = diffuse + material.color.multiply_components(light.color) * (
+                        material.diffuse * diff_intensity * light.intensity
+                    )
+                    
+                    # Spéculaire
+                    if diff_intensity > 0:
+                        reflect_dir = reflect(-light_dir, normal)
+                        view_dir_normalized = -view_dir.normalize()
+                        spec_intensity = max(0, reflect_dir.dot(view_dir_normalized))
+                        spec_intensity = pow(spec_intensity, material.shininess)
+                        specular = specular + light.color * (
+                            material.specular * spec_intensity * light.intensity
+                        )
             else:
                 # Lumière ponctuelle : calculer direction et distance
                 light_dir = (light.position - point).normalize()
                 light_distance = (light.position - point).length()
-            
-            # Vérifie les ombres
-            shadow_ray = Ray(point + normal * 0.001, light_dir)
-            in_shadow = self.is_in_shadow(shadow_ray, light_distance)
-            
-            if not in_shadow:
-                # Diffuse
-                diff_intensity = max(0, normal.dot(light_dir))
-                diffuse = diffuse + material.color.multiply_components(light.color) * (
-                    material.diffuse * diff_intensity * light.intensity
-                )
                 
-                # Spéculaire
-                if diff_intensity > 0:
-                    reflect_dir = reflect(-light_dir, normal)
-                    view_dir_normalized = -view_dir.normalize()  # Direction du point vers la caméra
-                    spec_intensity = max(0, reflect_dir.dot(view_dir_normalized))
-                    spec_intensity = pow(spec_intensity, material.shininess)
-                    specular = specular + light.color * (
-                        material.specular * spec_intensity * light.intensity
+                # Vérifie les ombres
+                shadow_ray = Ray(point + normal * 0.001, light_dir)
+                in_shadow = self.is_in_shadow(shadow_ray, light_distance)
+                
+                if not in_shadow:
+                    # Diffuse
+                    diff_intensity = max(0, normal.dot(light_dir))
+                    diffuse = diffuse + material.color.multiply_components(light.color) * (
+                        material.diffuse * diff_intensity * light.intensity
                     )
+                    
+                    # Spéculaire
+                    if diff_intensity > 0:
+                        reflect_dir = reflect(-light_dir, normal)
+                        view_dir_normalized = -view_dir.normalize()
+                        spec_intensity = max(0, reflect_dir.dot(view_dir_normalized))
+                        spec_intensity = pow(spec_intensity, material.shininess)
+                        specular = specular + light.color * (
+                            material.specular * spec_intensity * light.intensity
+                        )
         
         final_color = ambient + diffuse + specular
         return final_color.clamp(0, 1)
     
     def is_in_shadow(self, shadow_ray, light_distance):
-        """Vérifie si un point est dans l'ombre"""
         for obj in self.scene.objects:
             hit, t, _ = obj.intersect(shadow_ray)
             if hit and t < light_distance:
