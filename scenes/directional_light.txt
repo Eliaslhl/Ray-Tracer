@@ -1,0 +1,27 @@
+# Scene de test avec lumière directionnelle
+# Comme le soleil qui éclaire depuis une direction fixe
+
+# Caméra
+CAMERA 0 2 8 0 0 0 60
+
+# Lumière directionnelle (comme le soleil venant d'en haut à droite)
+# direction_x direction_y direction_z intensity [color_r color_g color_b]
+DIRECTIONAL_LIGHT 1 -1 -0.5 0.8 1.0 1.0 0.9
+
+# Lumière ponctuelle d'appoint (à gauche)
+LIGHT -5 3 5 0.3 0.5 0.7 1.0
+
+# Sol
+PLANE 0 -1 0 0 1 0 0.8 0.8 0.8 0.1 0.7 0.1
+
+# Sphère rouge
+SPHERE 0 0.5 0 1.5 1.0 0.2 0.2 0.1 0.7 0.3 50 0.0
+
+# Sphère verte (à gauche)
+SPHERE -3 0.5 -1 1.0 0.2 1.0 0.2 0.1 0.7 0.3 50 0.0
+
+# Sphère bleue (à droite)
+SPHERE 3 0.5 -1 1.0 0.2 0.2 1.0 0.1 0.7 0.3 50 0.0
+
+# Fond bleu clair
+BACKGROUND 0.5 0.7 1.0

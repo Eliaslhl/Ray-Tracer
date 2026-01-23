@@ -4,7 +4,7 @@
 
 from math_utils import Vec3
 from geometry import Sphere, Plane
-from scene import Scene, Camera, Material, Light
+from scene import Scene, Camera, Material, Light, DirectionalLight
 
 def load_scene(filename):
     """
@@ -61,6 +61,19 @@ def load_scene(filename):
                     if len(tokens) >= 8:
                         color = Vec3(float(tokens[5]), float(tokens[6]), float(tokens[7]))
                     light = Light(position, intensity, color)
+                    scene.add_light(light)
+                
+                elif command == 'DIRECTIONAL_LIGHT':
+                    # DIRECTIONAL_LIGHT dir_x dir_y dir_z intensity [color_r color_g color_b]
+                    if len(tokens) < 5:
+                        print(f"Ligne {line_num}: DIRECTIONAL_LIGHT nécessite au moins 4 paramètres")
+                        continue
+                    direction = Vec3(float(tokens[1]), float(tokens[2]), float(tokens[3]))
+                    intensity = float(tokens[4])
+                    color = Vec3(1, 1, 1)  # Blanc par défaut
+                    if len(tokens) >= 8:
+                        color = Vec3(float(tokens[5]), float(tokens[6]), float(tokens[7]))
+                    light = DirectionalLight(direction, intensity, color)
                     scene.add_light(light)
                 
                 elif command == 'SPHERE':
