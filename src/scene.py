@@ -45,6 +45,26 @@ class Light:
         self.position = position
         self.intensity = intensity
         self.color = color if color else Vec3(1, 1, 1)
+        self.is_directional = False  # Lumière ponctuelle
+
+
+class DirectionalLight:
+    """
+    Classe représentant une lumière directionnelle (comme le soleil).
+    La lumière vient d'une direction fixe et est infiniment éloignée.
+    """
+    
+    def __init__(self, direction, intensity=1.0, color=None):
+        """
+        Initialise une lumière directionnelle.
+        direction: direction de la lumière (Vec3) - pointe VERS la scène
+        intensity: intensité de la lumière (0-1)
+        color: couleur de la lumière (Vec3), blanc par défaut
+        """
+        self.direction = direction.normalize()  # Direction normalisée
+        self.intensity = intensity
+        self.color = color if color else Vec3(1, 1, 1)
+        self.is_directional = True  # Lumière directionnelle
 
 
 class Camera:

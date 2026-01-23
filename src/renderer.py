@@ -94,8 +94,15 @@ class Renderer:
         specular = Vec3(0, 0, 0)
         
         for light in self.scene.lights:
-            light_dir = (light.position - point).normalize()
-            light_distance = (light.position - point).length()
+            # Gestion différente selon le type de lumière
+            if light.is_directional:
+                # Lumière directionnelle : direction fixe
+                light_dir = -light.direction  # Inverse car direction pointe vers la scène
+                light_distance = float('inf')  # Distance infinie
+            else:
+                # Lumière ponctuelle : calculer direction et distance
+                light_dir = (light.position - point).normalize()
+                light_distance = (light.position - point).length()
             
             # Vérifie les ombres
             shadow_ray = Ray(point + normal * 0.001, light_dir)
@@ -111,7 +118,8 @@ class Renderer:
                 # Spéculaire
                 if diff_intensity > 0:
                     reflect_dir = reflect(-light_dir, normal)
-                    spec_intensity = max(0, reflect_dir.dot(-view_dir))
+                    view_dir_normalized = -view_dir.normalize()  # Direction du point vers la caméra
+                    spec_intensity = max(0, reflect_dir.dot(view_dir_normalized))
                     spec_intensity = pow(spec_intensity, material.shininess)
                     specular = specular + light.color * (
                         material.specular * spec_intensity * light.intensity

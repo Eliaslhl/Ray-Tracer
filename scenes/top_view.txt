@@ -7,7 +7,9 @@ CAMERA 0 10 0.5  0 0 0  50
 
 # Lumières: position (x y z) intensité [couleur optionnelle]
 LIGHT 5 10 5  1.0
-LIGHT -3 5 3  0.5
+# Lumière directionnelle (comme le soleil venant d'en haut à droite)
+# direction_x direction_y direction_z intensity [color_r color_g color_b]
+DIRECTIONAL_LIGHT 1 -1 -0.5 0.8 1.0 1.0 0.9
 
 # Couleur de fond (r g b) - valeurs entre 0 et 1
 BACKGROUND 0.2 0.2 0.3
