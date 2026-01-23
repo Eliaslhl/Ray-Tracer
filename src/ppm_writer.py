@@ -1,7 +1,3 @@
-# =============================================================================
-# ppm_writer.py - Export d'images au format PPM
-# =============================================================================
-
 """
 Le format PPM (Portable Pixmap) est un format d'image simple et lisible.
 Structure d'un fichier PPM (P3 = ASCII):

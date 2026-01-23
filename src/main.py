@@ -1,5 +1,3 @@
-# main.py - Ray tracer
-
 import sys
 import os
 from scene_loader import load_scene

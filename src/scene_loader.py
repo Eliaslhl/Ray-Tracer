@@ -1,30 +1,12 @@
-# =============================================================================
-# scene_loader.py - Parser de fichier de scène
-# =============================================================================
-
 from math_utils import Vec3
 from geometry import Sphere, Plane
-from scene import Scene, Camera, Material, Light, DirectionalLight
+from scene import Scene, Camera, Material, Light, DirectionalLight, AmbientLight
 
 def load_scene(filename):
-    """
-    Charge une scène depuis un fichier texte.
-    filename: chemin du fichier de scène (str)
-    Retourne: un objet Scene
-    
-    Format du fichier:
-    # Commentaire (ignoré)
-    CAMERA position_x position_y position_z look_at_x look_at_y look_at_z fov
-    LIGHT position_x position_y position_z intensity [color_r color_g color_b]
-    SPHERE center_x center_y center_z radius color_r color_g color_b [ambient diffuse specular shininess reflectivity]
-    PLANE point_x point_y point_z normal_x normal_y normal_z color_r color_g color_b [ambient diffuse specular]
-    BACKGROUND color_r color_g color_b
-    """
     scene = Scene()
     
     with open(filename, 'r', encoding='utf-8') as f:
         for line_num, line in enumerate(f, 1):
-            # Enlève les espaces et saute les lignes vides ou commentaires
             line = line.strip()
             if not line or line.startswith('#'):
                 continue
@@ -38,7 +20,6 @@ def load_scene(filename):
             
             try:
                 if command == 'CAMERA':
-                    # CAMERA pos_x pos_y pos_z look_x look_y look_z fov
                     if len(tokens) < 8:
                         print(f"Ligne {line_num}: CAMERA nécessite 7 paramètres")
                         continue
@@ -51,7 +32,6 @@ def load_scene(filename):
                     scene.set_camera(camera)
                 
                 elif command == 'LIGHT':
-                    # LIGHT pos_x pos_y pos_z intensity [color_r color_g color_b]
                     if len(tokens) < 5:
                         print(f"Ligne {line_num}: LIGHT nécessite au moins 4 paramètres")
                         continue
@@ -64,7 +44,6 @@ def load_scene(filename):
                     scene.add_light(light)
                 
                 elif command == 'DIRECTIONAL_LIGHT':
-                    # DIRECTIONAL_LIGHT dir_x dir_y dir_z intensity [color_r color_g color_b]
                     if len(tokens) < 5:
                         print(f"Ligne {line_num}: DIRECTIONAL_LIGHT nécessite au moins 4 paramètres")
                         continue
@@ -76,8 +55,18 @@ def load_scene(filename):
                     light = DirectionalLight(direction, intensity, color)
                     scene.add_light(light)
                 
+                elif command == 'AMBIENT_LIGHT':
+                    if len(tokens) < 2:
+                        print(f"Ligne {line_num}: AMBIENT_LIGHT nécessite au moins 1 paramètre")
+                        continue
+                    intensity = float(tokens[1])
+                    color = Vec3(1, 1, 1)  # Blanc par défaut
+                    if len(tokens) >= 5:
+                        color = Vec3(float(tokens[2]), float(tokens[3]), float(tokens[4]))
+                    light = AmbientLight(intensity, color)
+                    scene.add_light(light)
+                
                 elif command == 'SPHERE':
-                    # SPHERE center_x center_y center_z radius color_r color_g color_b [ambient diffuse specular shininess reflectivity]
                     if len(tokens) < 8:
                         print(f"Ligne {line_num}: SPHERE nécessite au moins 7 paramètres")
                         continue
@@ -85,7 +74,6 @@ def load_scene(filename):
                     radius = float(tokens[4])
                     color = Vec3(float(tokens[5]), float(tokens[6]), float(tokens[7]))
                     
-                    # Paramètres optionnels du matériau
                     ambient = float(tokens[8]) if len(tokens) > 8 else 0.1
                     diffuse = float(tokens[9]) if len(tokens) > 9 else 0.7
                     specular = float(tokens[10]) if len(tokens) > 10 else 0.2
@@ -97,7 +85,6 @@ def load_scene(filename):
                     scene.add_object(sphere)
                 
                 elif command == 'PLANE':
-                    # PLANE point_x point_y point_z normal_x normal_y normal_z color_r color_g color_b [ambient diffuse specular]
                     if len(tokens) < 10:
                         print(f"Ligne {line_num}: PLANE nécessite au moins 9 paramètres")
                         continue
@@ -105,7 +92,6 @@ def load_scene(filename):
                     normal = Vec3(float(tokens[4]), float(tokens[5]), float(tokens[6]))
                     color = Vec3(float(tokens[7]), float(tokens[8]), float(tokens[9]))
                     
-                    # Paramètres optionnels du matériau
                     ambient = float(tokens[10]) if len(tokens) > 10 else 0.1
                     diffuse = float(tokens[11]) if len(tokens) > 11 else 0.7
                     specular = float(tokens[12]) if len(tokens) > 12 else 0.1
@@ -117,7 +103,6 @@ def load_scene(filename):
                     scene.add_object(plane)
                 
                 elif command == 'BACKGROUND':
-                    # BACKGROUND color_r color_g color_b
                     if len(tokens) < 4:
                         print(f"Ligne {line_num}: BACKGROUND nécessite 3 paramètres")
                         continue
